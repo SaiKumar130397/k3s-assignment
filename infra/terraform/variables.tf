@@ -16,6 +16,12 @@ variable "resource_group_name" {
   default     = "k3s-demo-rg"
 }
 
+variable "vm_name" {
+  description = "VM name"
+  type        = string
+  default     = "k3s-vm"
+}
+
 variable "vm_size" {
   description = "Size of the Azure VM."
   type        = string
