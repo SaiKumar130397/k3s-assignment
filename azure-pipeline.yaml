@@ -4,4 +4,39 @@ trigger:
       - "*"
 
 pool:
-  name: 
+  vmImage: ubuntu-latest
+
+stages:
+  stage: Deploy
+  displayName: Deploy to K3s
+
+  jobs:
+  - job: DeployNginx
+
+    steps:
+    - checkout: self
+    - task: DownloadSecureFile@1
+      name: kubeconfigFile
+      displayName: Download kubeconfig
+      inputs:
+        secureFile: 'kubeconfig'
+    
+    - script: |
+        mkdir -p ~/.kube
+        cp $(kubeconfigFile.secureFilePath) ~/.kube/config
+        chmod 600 ~/.kube/config
+
+        echo "Cluster connectivity check..."
+        kubectl get nodes
+      displayName: Configure kubeconfig
+    
+    - script: |
+        echo "Deploying manifests..."
+        kubectl apply -f k8s/
+      displayName: Deploy Kubernetes manifests
+
+    - script: |
+        kubectl rollout status deployment/hello-nginx --timeout=120s
+        kubectl get pods
+        kubectl get svc
+      displayName: Verify deployment
