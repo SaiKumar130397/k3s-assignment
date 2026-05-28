@@ -6,29 +6,15 @@ This project demonstrates the automated provisioning of a single-node k3s Kubern
 
 # End-to-End Workflow
 
-Developer Pushes Code  
-             │  
-            ▼  
-Azure DevOps Pipeline Triggered  
-             │  
-            ▼  
-Microsoft Hosted Agent Starts  
-             │  
-            ▼  
-Download kubeconfig from Secure Files  
-             │  
-            ▼  
-Cluster Connectivity Validation  
-(kubectl get nodes)  
-             │  
-            ▼  
-kubectl apply -f k8s/  
-             │  
-            ▼  
-Deployment Rollout Verification  
-             │  
-            ▼  
-Hello World Application Updated
+```mermaid
+flowchart LR
+    A[Developer Push] --> B[Azure DevOps Pipeline]
+    B --> C[Authenticate to Cluster]
+    C --> D[Deploy & Verify]
+    D --> E[App Updated]
+```
+
+A push to the repository triggers the Azure DevOps pipeline, which runs on a Microsoft-hosted agent. The agent authenticates to the k3s cluster by pulling the kubeconfig from Azure DevOps Secure Files and pointing it at the VM's public IP. It then applies the manifests in `k8s/` and verifies the rollout with `kubectl`, after which the updated Hello World app is reachable on the NodePort.
 
 # Infra Provision
 
@@ -55,7 +41,14 @@ Hello World Application Updated
 # Application Architecture
 
 - Deployment architecture:  
-ConfigMap -> HTML content injected into nginx container -> Deployment -> Service (NodePort) -> Browser Access  
+
+```mermaid
+flowchart LR
+    CM[ConfigMap<br/>HTML content] --> NG[Nginx Container]
+    NG --> DP[Deployment]
+    DP --> SVC[Service<br/>NodePort 30080]
+    SVC --> BR[Browser Access]
+``` 
 - ConfigMap stores HTML content. It injects custom HTML without rebuilding container images.
 
 # CI/CD Pipeline
