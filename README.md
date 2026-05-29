@@ -54,7 +54,7 @@ flowchart LR
 # CI/CD Pipeline
 
 - A simple CI/CD pipeline is designed to trigger when changes are pushed to the repository, and then apply the Kubernetes manifest for the Nginx application to the k3s cluster.
-- kubeconfig is a Kubernetes authentication and cluster connection configuration file. It consists of information like the admin, credentials, client certs, contexts, certificate-authority-data, private key etc.
+- kubeconfig is a Kubernetes authentication and cluster connection configuration file. It consists of information like the admin, credentials, client certs, contexts, certificate-authority-data, private key, etc.
 - k3s automatically creates kubeconfig during installation at /etc/rancher/k3s/k3s.yaml.
 - kubeconfig was stored using Azure DevOps Secure Files to follow security best practices.
 - Kubernetes credentials are fetched securely during the DownloadSecureFile@1 stage. Then the kubeconfig is copied from system location to user location (~/.kube/config), where kubectl looks automatically, to allow kubectl to authenticate and to avoid using sudo.
